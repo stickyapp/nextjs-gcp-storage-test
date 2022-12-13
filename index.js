@@ -3,10 +3,11 @@ const pulumi = require('@pulumi/pulumi');
 const gcp = require('@pulumi/gcp');
 
 // Create a GCP resource (Storage Bucket)
-const bucket = new gcp.storage.Bucket('my-bucket', {
+const bucket = new gcp.storage.Bucket('test-image-uploads-bucket', {
+  location: 'US',
   cors: [
     {
-      methods: ['POST'],
+      methods: ['*'],
       origins: ['*'],
       responseHeaders: ['*'],
     },

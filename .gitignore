@@ -2,3 +2,6 @@ node_modules
 .next
 .env.local
 .DS_Store
+.vscode
+.env.local
+Pulumi.*.yaml

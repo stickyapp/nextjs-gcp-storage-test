@@ -1,6 +1,10 @@
-import { Storage } from '@google-cloud/storage';
+import { Storage } from "@google-cloud/storage";
 
 export default async function handler(req, res) {
+  if (req.query.servicekey !== process.env.STICKY_SERVICE_KEY) {
+    res.status(403).json({ error: "Invalid/missing service key " });
+  }
+
   const storage = new Storage({
     projectId: process.env.PROJECT_ID,
     credentials: {
@@ -10,12 +14,12 @@ export default async function handler(req, res) {
   });
 
   const bucket = storage.bucket(process.env.BUCKET_NAME);
-  const file = bucket.file(req.query.file);
-  const options = {
-    expires: Date.now() + 1 * 60 * 1000, //  1 minute,
-    fields: { 'x-goog-meta-test': 'data' },
-  };
+  const file = bucket.file(req.query.filename);
 
-  const [response] = await file.generateSignedPostPolicyV4(options);
+  // Create a signed URL that can be used to upload a file to GCP bucket
+  const [response] = await file.generateSignedPostPolicyV4({
+    expires: Date.now() + 1 * 60 * 1000, //  1 minute,
+    fields: { "x-goog-meta-test": "data" },
+  });
   res.status(200).json(response);
 }
