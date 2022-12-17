@@ -1,6 +1,8 @@
 import { Storage } from "@google-cloud/storage";
+import allowCors from "../cors";
 
-export default async function handler(req, res) {
+async function handler(req, res) {
+  console.log(req.method + " " + req.url);
   const storage = new Storage({
     projectId: process.env.PROJECT_ID,
     credentials: {
@@ -20,5 +22,7 @@ export default async function handler(req, res) {
       expires: Date.now() + 15 * 60 * 1000, // 15 minutes
     });
 
-  res.redirect(307, url)
+  res.redirect(307, url);
 }
+
+module.exports = allowCors(handler);
